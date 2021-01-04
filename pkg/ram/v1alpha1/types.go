@@ -407,7 +407,7 @@ type AppConfigGroup struct {
 	Name          string            `json:"name"`
 	InjectionType string            `json:"injection_type"`
 	ConfigItems   map[string]string `json:"config_items"`
-	ComponentIDs  []string          `json:"component_ids"`
+	ComponentKeys []string          `json:"component_keys"`
 }
 
 //IngressHTTPRoute ingress http route
