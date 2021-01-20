@@ -27,13 +27,15 @@ import (
 
 //RainbondApplicationConfig store app version templete
 type RainbondApplicationConfig struct {
-	AppKeyID        string           `json:"group_key"`
-	AppName         string           `json:"group_name"`
-	AppVersion      string           `json:"group_version"`
-	TempleteVersion string           `json:"template_version"`
-	Components      []*Component     `json:"apps"`
-	Plugins         []Plugin         `json:"plugins,omitempty"`
-	AppConfigGroups []AppConfigGroup `json:"app_config_groups"`
+	AppKeyID           string              `json:"group_key"`
+	AppName            string              `json:"group_name"`
+	AppVersion         string              `json:"group_version"`
+	TempleteVersion    string              `json:"template_version"`
+	Components         []*Component        `json:"apps"`
+	Plugins            []Plugin            `json:"plugins,omitempty"`
+	AppConfigGroups    []AppConfigGroup    `json:"app_config_groups,omitempty"`
+	IngressHTTPRoutes  []IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
+	IngressSreamRoutes []IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
 }
 
 //HandleNullValue handle null value
@@ -416,7 +418,38 @@ type AppConfigGroup struct {
 	Name          string            `json:"name"`
 	InjectionType string            `json:"injection_type"`
 	ConfigItems   map[string]string `json:"config_items"`
-	ComponentIDs  []string          `json:"component_ids"`
+	ComponentKeys []string          `json:"component_keys"`
+}
+
+//IngressHTTPRoute ingress http route
+type IngressHTTPRoute struct {
+	DefaultDomain        bool              `json:"default_domain"`
+	Location             string            `json:"location"`
+	Cookies              map[string]string `json:"cookies"`
+	Headers              map[string]string `json:"headers"`
+	SSL                  bool              `json:"ssl"`
+	LoadBalancing        string            `json:"load_balancing"`
+	ConnectionTimeout    int               `json:"connection_timeout"`
+	RequestTimeout       int               `json:"request_timeout"`
+	ResponseTimeout      int               `json:"response_timeout"`
+	RequestBodySizeLimit int               `json:"request_body_size_limit"`
+	Websocket            bool              `json:"websocket"`
+	ProxyBuffer          bool              `json:"proxy_buffer"`
+	ProxyHeader          map[string]string `json:"proxy_header"`
+	TargetComponent
+}
+
+//IngressSreamRoute ingress stream route
+type IngressSreamRoute struct {
+	Protocol          string `json:"protocol"`
+	ConnectionTimeout int    `json:"connection_timeout"`
+	TargetComponent
+}
+
+//TargetComponent target component
+type TargetComponent struct {
+	ComponentKey string `json:"component_key"`
+	Port         uint32 `json:"port"`
 }
 
 // Endpoints endpoints for third party component.
