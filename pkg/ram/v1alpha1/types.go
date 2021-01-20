@@ -149,7 +149,9 @@ type Component struct {
 	Cmd                       string                    `json:"cmd"`
 	Language                  string                    `json:"language"`
 	ServicePluginConfigs      []ComponentPluginConfig   `json:"service_related_plugin_config,omitempty"`
-	ComponentMonitor          []ComponentMonitor        `json:"component_monitor"`
+	ComponentMonitor          []ComponentMonitor        `json:"component_monitors"`
+	ComponentGraphs           []ComponentGraph          `json:"component_graphs"`
+	Endpoints                 Endpoints                 `json:"endpoints"`
 }
 
 //HandleNullValue 处理null值
@@ -400,10 +402,26 @@ type ComponentMonitor struct {
 	Interval        string `json:"interval"`
 }
 
+// ComponentGraph is the graph of component.
+type ComponentGraph struct {
+	Name            string `json:"name"`
+	ServiceShowName string `json:"service_show_name"`
+	Port            int    `json:"port"`
+	Path            string `json:"path"`
+	Interval        string `json:"interval"`
+}
+
 //AppConfigGroup app config groups
 type AppConfigGroup struct {
 	Name          string            `json:"name"`
 	InjectionType string            `json:"injection_type"`
 	ConfigItems   map[string]string `json:"config_items"`
 	ComponentIDs  []string          `json:"component_ids"`
+}
+
+// Endpoints endpoints for third party component.
+type Endpoints struct {
+	Endpoints     string `json:"endpoints_info"`
+	ServiceCname  string `json:"service_cname"`
+	EndpointsType string `json:"endpoints_type"`
 }
