@@ -125,7 +125,7 @@ func (b *builder) buildComponent() {
 
 func (b *builder) getDepComponentConnectionInfo(componentKey string) []v1alpha1.ComponentEnv {
 	for _, com := range b.ram.Components {
-		if com.ServiceKey == componentKey {
+		if com.ComponentKey == componentKey {
 			return com.ServiceConnectInfoMapList
 		}
 	}

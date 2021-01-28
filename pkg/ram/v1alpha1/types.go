@@ -122,13 +122,14 @@ func (s *ComponentVolumeList) Add(volume ComponentVolume) {
 //Component component model
 type Component struct {
 	// container limit memory, unit MB
-	Memory                    int                       `json:"memory"`
-	CPU                       int                       `json:"cpu"`
-	Probes                    []ComponentProbe          `json:"probes"`
-	AppImage                  ImageInfo                 `json:"service_image"`
+	Memory   int              `json:"memory"`
+	CPU      int              `json:"cpu"`
+	Probes   []ComponentProbe `json:"probes"`
+	AppImage ImageInfo        `json:"service_image"`
+	// 废弃
 	ComponentID               string                    `json:"service_id"`
 	DeployType                DeployType                `json:"extend_method"`
-	ServiceKey                string                    `json:"service_key"`
+	ComponentKey              string                    `json:"service_key"`
 	ServiceShareID            string                    `json:"service_share_uuid,omitempty"`
 	ShareType                 string                    `json:"share_type,omitempty"`
 	MntReleationList          []ComponentShareVolume    `json:"mnt_relation_list"`
@@ -244,13 +245,14 @@ type ComponentEnv struct {
 //ComponentExtendMethodRule -
 //服务伸缩规则，目前仅包含手动伸缩的规则
 type ComponentExtendMethodRule struct {
-	MinNode    int `json:"min_node" bson:"min_node"`
-	StepMemory int `json:"step_memory" bson:"step_memory"`
-	IsRestart  int `json:"is_restart" bson:"is_restart"`
-	StepNode   int `json:"step_node" bson:"step_node"`
-	MaxMemory  int `json:"max_memory" bson:"max_memory"`
-	MaxNode    int `json:"max_node" bson:"max_node"`
-	MinMemory  int `json:"min_memory" bson:"min_memory"`
+	MinNode    int `json:"min_node"`
+	StepMemory int `json:"step_memory"`
+	IsRestart  int `json:"is_restart"`
+	StepNode   int `json:"step_node"`
+	MaxMemory  int `json:"max_memory"`
+	MaxNode    int `json:"max_node"`
+	MinMemory  int `json:"min_memory"`
+	InitMemory int `json:"init_memory"`
 }
 
 //DefaultExtendMethodRule default Scaling rules
@@ -267,23 +269,22 @@ func DefaultExtendMethodRule() ComponentExtendMethodRule {
 
 //Plugin  templete plugin model
 type Plugin struct {
-	ID            int                 `json:"ID" bson:"id"`
-	Origin        string              `json:"origin" bson:"origin"`
-	CodeRepo      string              `json:"code_repo" bson:"code_repo"`
-	PluginAlias   string              `json:"plugin_alias" bson:"plugin_alias"`
-	PluginName    string              `json:"plugin_name" bson:"plugin_name"`
-	CreateTime    string              `json:"create_time" bson:"create_time"`
-	ShareImage    string              `json:"share_image" bson:"share_image"`
-	ConfigGroups  []PluginConfigGroup `json:"config_groups,omitempty" bson:"config_groups"`
-	PluginKey     string              `json:"plugin_key" bson:"plugin_key"`
-	BuildSource   string              `json:"build_source" bson:"build_source"`
-	Desc          string              `json:"desc" bson:"desc"`
-	PluginID      string              `json:"plugin_id" bson:"plugin_id"`
-	Category      string              `json:"category" bson:"category"`
-	OriginShareID string              `json:"origin_share_id" bson:"origin_share_id"`
-	Image         string              `json:"image" bson:"image"`
-	PluginImage   ImageInfo           `json:"plugin_image" bson:"plugin_image"`
-	BuildVersion  string              `json:"build_version" bson:"build_version"`
+	Origin        string              `json:"origin"`
+	CodeRepo      string              `json:"code_repo"`
+	Image         string              `json:"image"`
+	PluginAlias   string              `json:"plugin_alias"`
+	PluginName    string              `json:"plugin_name"`
+	CreateTime    string              `json:"create_time"`
+	ShareImage    string              `json:"share_image"`
+	ConfigGroups  []PluginConfigGroup `json:"config_groups,omitempty"`
+	PluginKey     string              `json:"plugin_key"`
+	BuildSource   string              `json:"build_source"`
+	Desc          string              `json:"desc"`
+	PluginID      string              `json:"plugin_id"`
+	Category      string              `json:"category"`
+	OriginShareID string              `json:"origin_share_id"`
+	PluginImage   ImageInfo           `json:"plugin_image"`
+	BuildVersion  string              `json:"build_version"`
 }
 
 //Validation validation app templete
