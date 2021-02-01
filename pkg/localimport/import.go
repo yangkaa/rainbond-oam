@@ -61,13 +61,15 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 		return nil, err
 	}
 	ext := path.Ext(filePath)
-	if ext == "zip" {
+	if ext == ".zip" {
 		if err := util.Unzip(filePath, r.homeDir); err != nil {
 			r.logger.Errorf("unzip file %s faile %s", filePath, err.Error())
+			return nil, err
 		}
 	} else {
 		if err := util.Untar(filePath, r.homeDir); err != nil {
 			r.logger.Errorf("untar file %s faile %s", filePath, err.Error())
+			return nil, err
 		}
 	}
 	r.logger.Infof("prepare app meta file success")
