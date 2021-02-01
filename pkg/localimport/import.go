@@ -111,13 +111,19 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 			return nil, err
 		}
 		if err := docker.ImageTag(r.client, com.ShareImage, newImageName, 2); err != nil {
-			//
+			//Compatibility History Version
 			if strings.Contains(err.Error(), "No such image") {
 				var saveImage string
 				saveImage, err = docker.GetOldSaveImageName(com.ShareImage, false)
+				if err != nil {
+					return nil, err
+				}
 				err = docker.ImageTag(r.client, saveImage, newImageName, 2)
 				if err != nil && strings.Contains(err.Error(), "No such image") {
 					saveImage, err = docker.GetOldSaveImageName(com.ShareImage, true)
+					if err != nil {
+						return nil, err
+					}
 					err = docker.ImageTag(r.client, saveImage, newImageName, 2)
 				}
 			}
@@ -141,8 +147,26 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 			return nil, err
 		}
 		if err := docker.ImageTag(r.client, plugin.ShareImage, newImageName, 2); err != nil {
-			logrus.Errorf("change image %s tag to %s failure %s", plugin.ShareImage, newImageName, err.Error())
-			return nil, err
+			//Compatibility History Version
+			if strings.Contains(err.Error(), "No such image") {
+				var saveImage string
+				saveImage, err = docker.GetOldSaveImageName(plugin.ShareImage, false)
+				if err != nil {
+					return nil, err
+				}
+				err = docker.ImageTag(r.client, saveImage, newImageName, 2)
+				if err != nil && strings.Contains(err.Error(), "No such image") {
+					saveImage, err = docker.GetOldSaveImageName(plugin.ShareImage, true)
+					if err != nil {
+						return nil, err
+					}
+					err = docker.ImageTag(r.client, saveImage, newImageName, 2)
+				}
+			}
+			if err != nil {
+				logrus.Errorf("change image %s tag to %s failure %s", plugin.ShareImage, newImageName, err.Error())
+				return nil, err
+			}
 		}
 		if err := docker.ImagePush(r.client, newImageName, hubInfo.HubUser, hubInfo.HubPassword, 20); err != nil {
 			logrus.Errorf("push image %s failure %s", newImageName, err.Error())
