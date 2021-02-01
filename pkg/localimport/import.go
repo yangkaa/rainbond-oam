@@ -55,6 +55,9 @@ type ramImport struct {
 }
 
 func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alpha1.RainbondApplicationConfig, error) {
+	if hubInfo.HubURL == "" {
+		return nil, fmt.Errorf("must define hub url")
+	}
 	r.logger.Infof("start import app by app file %s", filePath)
 	if err := export.PrepareExportDir(r.homeDir); err != nil {
 		r.logger.Errorf("prepare import dir failure %s", err.Error())
@@ -108,10 +111,15 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 			return nil, err
 		}
 		if err := docker.ImageTag(r.client, com.ShareImage, newImageName, 2); err != nil {
+			//
 			if strings.Contains(err.Error(), "No such image") {
 				var saveImage string
-				saveImage, err = docker.GetOldSaveImageName(com.ShareImage)
+				saveImage, err = docker.GetOldSaveImageName(com.ShareImage, false)
 				err = docker.ImageTag(r.client, saveImage, newImageName, 2)
+				if strings.Contains(err.Error(), "No such image") {
+					saveImage, err = docker.GetOldSaveImageName(com.ShareImage, true)
+					err = docker.ImageTag(r.client, saveImage, newImageName, 2)
+				}
 			}
 			if err != nil {
 				logrus.Errorf("change image %s tag to %s failure %s", com.ShareImage, newImageName, err.Error())

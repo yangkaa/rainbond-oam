@@ -37,3 +37,7 @@ func TestNewImage(t *testing.T) {
 	}
 	t.Log(new)
 }
+
+func TestGetOldSaveImageName(t *testing.T) {
+	t.Log(GetOldSaveImageName("goodrain.me/23ehgni5/67b72db7c89259e14df990e5ca7941a3:20190805191011", false))
+}

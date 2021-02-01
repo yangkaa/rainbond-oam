@@ -429,7 +429,7 @@ func NewImageName(source string, hubInfo v1alpha1.ImageInfo) (string, error) {
 }
 
 //GetOldSaveImageName get old save image name before V5.3
-func GetOldSaveImageName(source string) (string, error) {
+func GetOldSaveImageName(source string, withDomain bool) (string, error) {
 	ref, err := reference.ParseAnyReference(source)
 	if err != nil {
 		return "", err
@@ -438,9 +438,12 @@ func GetOldSaveImageName(source string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, onlyname := reference.SplitHostname(name)
+	domain, onlyname := reference.SplitHostname(name)
 	if strings.Contains(onlyname, "/") {
 		onlyname = onlyname[strings.Index(onlyname, "/")+1:]
+	}
+	if withDomain {
+		return fmt.Sprintf("%s/%s:%s", domain, onlyname, GetTagFromNamedRef(name)), nil
 	}
 	return fmt.Sprintf("%s:%s", onlyname, GetTagFromNamedRef(name)), nil
 }
