@@ -116,7 +116,7 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 				var saveImage string
 				saveImage, err = docker.GetOldSaveImageName(com.ShareImage, false)
 				err = docker.ImageTag(r.client, saveImage, newImageName, 2)
-				if strings.Contains(err.Error(), "No such image") {
+				if err != nil && strings.Contains(err.Error(), "No such image") {
 					saveImage, err = docker.GetOldSaveImageName(com.ShareImage, true)
 					err = docker.ImageTag(r.client, saveImage, newImageName, 2)
 				}
