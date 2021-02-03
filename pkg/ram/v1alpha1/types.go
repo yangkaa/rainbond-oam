@@ -27,15 +27,15 @@ import (
 
 //RainbondApplicationConfig store app version templete
 type RainbondApplicationConfig struct {
-	AppKeyID           string              `json:"group_key"`
-	AppName            string              `json:"group_name"`
-	AppVersion         string              `json:"group_version"`
-	TempleteVersion    string              `json:"template_version"`
-	Components         []*Component        `json:"apps"`
-	Plugins            []Plugin            `json:"plugins,omitempty"`
-	AppConfigGroups    []AppConfigGroup    `json:"app_config_groups,omitempty"`
-	IngressHTTPRoutes  []IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
-	IngressSreamRoutes []IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
+	AppKeyID           string               `json:"group_key"`
+	AppName            string               `json:"group_name"`
+	AppVersion         string               `json:"group_version"`
+	TempleteVersion    string               `json:"template_version"`
+	Components         []*Component         `json:"apps"`
+	Plugins            []*Plugin            `json:"plugins,omitempty"`
+	AppConfigGroups    []*AppConfigGroup    `json:"app_config_groups,omitempty"`
+	IngressHTTPRoutes  []*IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
+	IngressSreamRoutes []*IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
 }
 
 //HandleNullValue handle null value
@@ -44,7 +44,7 @@ func (s *RainbondApplicationConfig) HandleNullValue() {
 		s.TempleteVersion = "v2"
 	}
 	if s.Plugins == nil {
-		s.Plugins = []Plugin{}
+		s.Plugins = []*Plugin{}
 	}
 	for i := range s.Components {
 		s.Components[i].HandleNullValue()

@@ -53,7 +53,7 @@ func NewBuilder(ram v1alpha1.RainbondApplicationConfig) Builder {
 }
 
 //NewWorkloadBuilder new workload builder
-func NewWorkloadBuilder(com v1alpha1.Component, plugins []v1alpha1.Plugin) WorkloadBuilder {
+func NewWorkloadBuilder(com v1alpha1.Component, plugins []*v1alpha1.Plugin) WorkloadBuilder {
 	switch com.DeployType {
 	case v1alpha1.StateMultipleDeployType, v1alpha1.StateSingletonDeployType:
 		return &statefulWorkloadBuilder{

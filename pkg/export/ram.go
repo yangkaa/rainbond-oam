@@ -103,10 +103,9 @@ func (r *ramExporter) saveComponents() error {
 func (r *ramExporter) savePlugins() error {
 	var pluginImageNames []string
 	for _, plugin := range r.ram.Plugins {
-
 		if plugin.ShareImage != "" {
 			// app is image type
-			localImageName, err := pullPluginImage(r.client, plugin)
+			localImageName, err := pullPluginImage(r.client, *plugin)
 			if err != nil {
 				return err
 			}
