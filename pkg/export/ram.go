@@ -81,7 +81,7 @@ func (r *ramExporter) saveComponents() error {
 		componentName := unicode2zh(component.ServiceCname)
 		if component.ShareImage != "" {
 			// app is image type
-			localImageName, err := pullImage(r.client, component)
+			localImageName, err := pullImage(r.client, component, r.logger)
 			if err != nil {
 				return err
 			}
@@ -105,7 +105,7 @@ func (r *ramExporter) savePlugins() error {
 	for _, plugin := range r.ram.Plugins {
 		if plugin.ShareImage != "" {
 			// app is image type
-			localImageName, err := pullPluginImage(r.client, *plugin)
+			localImageName, err := pullPluginImage(r.client, plugin, r.logger)
 			if err != nil {
 				return err
 			}

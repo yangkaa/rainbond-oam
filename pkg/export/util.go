@@ -91,19 +91,21 @@ func unicode2zh(uText string) (context string) {
 	return context
 }
 
-func pullImage(client *client.Client, component *v1alpha1.Component) (string, error) {
+func pullImage(client *client.Client, component *v1alpha1.Component, log *logrus.Logger) (string, error) {
 	// docker pull image-name
 	_, err := docker.ImagePull(client, component.ShareImage, component.AppImage.HubUser, component.AppImage.HubPassword, 30)
 	if err != nil {
+		log.Errorf("plugin image %s by user %s failure %s", component.ShareImage, component.AppImage.HubUser, err.Error())
 		return "", err
 	}
 	return component.ShareImage, nil
 }
 
-func pullPluginImage(client *client.Client, plugin v1alpha1.Plugin) (string, error) {
+func pullPluginImage(client *client.Client, plugin *v1alpha1.Plugin, log *logrus.Logger) (string, error) {
 	// docker pull image-name
 	_, err := docker.ImagePull(client, plugin.ShareImage, plugin.PluginImage.HubUser, plugin.PluginImage.HubPassword, 30)
 	if err != nil {
+		log.Errorf("plugin image %s by user %s failure %s", plugin.ShareImage, plugin.PluginImage.HubUser, err.Error())
 		return "", err
 	}
 	return plugin.ShareImage, nil

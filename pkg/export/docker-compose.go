@@ -100,7 +100,7 @@ func (d *dockerComposeExporter) saveComponents() error {
 		}
 		if component.ShareImage != "" {
 			// app is image type
-			localImageName, err := pullImage(d.client, component)
+			localImageName, err := pullImage(d.client, component, d.logger)
 			if err != nil {
 				return err
 			}
