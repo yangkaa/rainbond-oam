@@ -29,8 +29,8 @@ import (
 
 func TestImport(t *testing.T) {
 	c, _ := client.NewEnvClient()
-	im := New(logrus.StandardLogger(), c, "/tmp/ram/springboot")
-	info, err := im.Import("/Users/barnett/Downloads/若依SpringBoot-3.2.zip", v1alpha1.ImageInfo{
+	im := New(logrus.StandardLogger(), c, "/tmp/ram/default")
+	info, err := im.Import("/Users/barnett/Downloads/默认应用-1.0-ram.tar.gz", v1alpha1.ImageInfo{
 		HubPassword: os.Getenv("PASS"),
 		Namespace:   "test",
 		HubURL:      "image.goodrain.com",

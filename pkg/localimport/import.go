@@ -91,10 +91,17 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 		return nil, fmt.Errorf("Failed to read meta file : %v", err)
 	}
 	// load all component images and plugin images
-	allfiles, err := util.GetFileList(path.Join(r.homeDir, files[0].Name()), 2)
+	//after v5.3 package
+	l1, err := util.GetFileList(path.Join(r.homeDir, files[0].Name()), 1)
 	if err != nil {
 		return nil, err
 	}
+	//before v5.3 package
+	l2, err := util.GetFileList(path.Join(r.homeDir, files[0].Name()), 2)
+	if err != nil {
+		return nil, err
+	}
+	allfiles := append(l1, l2...)
 	for _, f := range allfiles {
 		if strings.HasSuffix(f, ".tar") {
 			if err := docker.ImageLoad(r.client, f); err != nil {
