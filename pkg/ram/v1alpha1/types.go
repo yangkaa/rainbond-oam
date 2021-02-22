@@ -241,6 +241,8 @@ type ComponentEnv struct {
 	Name      string `json:"name"`
 	IsChange  bool   `json:"is_change"`
 	AttrValue string `json:"attr_value"`
+	// port binding variable
+	ContainerPort int32 `json:"container_port"`
 }
 
 //ComponentExtendMethodRule -
