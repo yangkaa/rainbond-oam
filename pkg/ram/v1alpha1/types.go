@@ -375,9 +375,9 @@ type ComponentVolume struct {
 	FileConent      string     `json:"file_content"`
 	VolumeMountPath string     `json:"volume_path"`
 	VolumeType      VolumeType `json:"volume_type"`
-	VolumeCapacity  int        `json:"volume_capacity"`
-	AccessMode      AccessMode `json:"access_mode"`
-	SharingPolicy   string     `json:"sharing_policy"`
+	VolumeCapacity  int        `json:"volume_capacity,omitempty"`
+	AccessMode      AccessMode `json:"access_mode,omitempty"`
+	SharePolicy     string     `json:"share_policy,omitempty"`
 }
 
 //ComponentPluginConfig 服务插件配置数据
