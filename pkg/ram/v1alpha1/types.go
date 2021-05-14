@@ -406,11 +406,11 @@ type ComponentMonitor struct {
 
 // ComponentGraph is the graph of component.
 type ComponentGraph struct {
-	Name            string `json:"name"`
-	ServiceShowName string `json:"service_show_name"`
-	Port            int    `json:"port"`
-	Path            string `json:"path"`
-	Interval        string `json:"interval"`
+	ComponentID string `json:"component_id"`
+	GraphID     string `json:"graph_id"`
+	Title       string `json:"title"`
+	PromQL      string `json:"promql"`
+	Sequence    int    `json:"sequence"`
 }
 
 //AppConfigGroup app config groups
