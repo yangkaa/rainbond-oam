@@ -29,7 +29,7 @@ import (
 
 type statefulWorkloadBuilder struct {
 	com     v1alpha1.Component
-	plugins []v1alpha1.Plugin
+	plugins []*v1alpha1.Plugin
 	output  []v1alpha2.DataOutput
 }
 

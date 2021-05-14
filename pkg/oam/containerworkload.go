@@ -30,7 +30,7 @@ import (
 
 type containerWorkloadBuilder struct {
 	com     v1alpha1.Component
-	plugins []v1alpha1.Plugin
+	plugins []*v1alpha1.Plugin
 	output  []v1alpha2.DataOutput
 }
 
@@ -269,7 +269,7 @@ func createProbe(probe v1alpha1.ComponentProbe) *v1alpha2.ContainerHealthProbe {
 func (c *containerWorkloadBuilder) getPlugin(key string) *v1alpha1.Plugin {
 	for _, p := range c.plugins {
 		if p.PluginKey == key {
-			return &p
+			return p
 		}
 	}
 	return nil

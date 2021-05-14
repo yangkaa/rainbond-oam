@@ -27,15 +27,15 @@ import (
 
 //RainbondApplicationConfig store app version templete
 type RainbondApplicationConfig struct {
-	AppKeyID           string              `json:"group_key"`
-	AppName            string              `json:"group_name"`
-	AppVersion         string              `json:"group_version"`
-	TempleteVersion    string              `json:"template_version"`
-	Components         []*Component        `json:"apps"`
-	Plugins            []Plugin            `json:"plugins,omitempty"`
-	AppConfigGroups    []AppConfigGroup    `json:"app_config_groups,omitempty"`
-	IngressHTTPRoutes  []IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
-	IngressSreamRoutes []IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
+	AppKeyID           string               `json:"group_key"`
+	AppName            string               `json:"group_name"`
+	AppVersion         string               `json:"group_version"`
+	TempleteVersion    string               `json:"template_version"`
+	Components         []*Component         `json:"apps"`
+	Plugins            []*Plugin            `json:"plugins,omitempty"`
+	AppConfigGroups    []*AppConfigGroup    `json:"app_config_groups,omitempty"`
+	IngressHTTPRoutes  []*IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
+	IngressSreamRoutes []*IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
 }
 
 //HandleNullValue handle null value
@@ -44,7 +44,7 @@ func (s *RainbondApplicationConfig) HandleNullValue() {
 		s.TempleteVersion = "v2"
 	}
 	if s.Plugins == nil {
-		s.Plugins = []Plugin{}
+		s.Plugins = []*Plugin{}
 	}
 	for i := range s.Components {
 		s.Components[i].HandleNullValue()
@@ -128,7 +128,7 @@ type Component struct {
 	AppImage                  ImageInfo                 `json:"service_image"`
 	ComponentID               string                    `json:"service_id"`
 	DeployType                DeployType                `json:"extend_method"`
-	ServiceKey                string                    `json:"service_key"`
+	ComponentKey              string                    `json:"service_key"`
 	ServiceShareID            string                    `json:"service_share_uuid,omitempty"`
 	ShareType                 string                    `json:"share_type,omitempty"`
 	MntReleationList          []ComponentShareVolume    `json:"mnt_relation_list"`
@@ -153,7 +153,7 @@ type Component struct {
 	ServicePluginConfigs      []ComponentPluginConfig   `json:"service_related_plugin_config,omitempty"`
 	ComponentMonitor          []ComponentMonitor        `json:"component_monitors"`
 	ComponentGraphs           []ComponentGraph          `json:"component_graphs"`
-	Endpoints                 Endpoints                 `json:"endpoints"`
+	Endpoints                 Endpoints                 `json:"endpoints,omitempty"`
 }
 
 //HandleNullValue 处理null值
@@ -192,20 +192,20 @@ func (s *Component) Validation() error {
 //ComponentProbe probe
 type ComponentProbe struct {
 	ID                 int    `json:"ID" bson:"ID"`
-	InitialDelaySecond int    `json:"initial_delay_second" bson:"initial_delay_second"`
-	FailureThreshold   int    `json:"failure_threshold" bson:"failure_threshold"`
-	ServiceID          string `json:"service_id" bson:"service_id"`
-	HTTPHeader         string `json:"http_header" bson:"http_header"`
-	Cmd                string `json:"cmd" bson:"cmd"`
-	ProbeID            string `json:"probe_id" bson:"probe_id"`
-	Scheme             string `json:"scheme" bson:"scheme"`
-	SuccessThreshold   int    `json:"success_threshold" bson:"success_threshold"`
-	TimeoutSecond      int    `json:"timeout_second" bson:"timeout_second"`
-	IsUsed             bool   `json:"is_used" bson:"is_used"`
-	PeriodSecond       int    `json:"period_second" bson:"period_second"`
-	Port               int    `json:"port" bson:"port"`
-	Mode               string `json:"mode" bson:"mode"`
-	Path               string `json:"path" bson:"path"`
+	InitialDelaySecond int    `json:"initial_delay_second"`
+	FailureThreshold   int    `json:"failure_threshold"`
+	ServiceID          string `json:"service_id"`
+	HTTPHeader         string `json:"http_header"`
+	Cmd                string `json:"cmd"`
+	ProbeID            string `json:"probe_id"`
+	Scheme             string `json:"scheme"`
+	SuccessThreshold   int    `json:"success_threshold"`
+	TimeoutSecond      int    `json:"timeout_second"`
+	IsUsed             bool   `json:"is_used"`
+	PeriodSecond       int    `json:"period_second"`
+	Port               int    `json:"port"`
+	Mode               string `json:"mode"`
+	Path               string `json:"path"`
 }
 
 //Validation probe validation
@@ -218,41 +218,44 @@ func (s *ComponentProbe) Validation() error {
 
 //ImageInfo -
 type ImageInfo struct {
-	HubPassword string `json:"hub_password" bson:"hub_password"`
-	Namespace   string `json:"namespace" bson:"namespace"`
-	HubURL      string `json:"hub_url" bson:"hub_url"`
-	HubUser     string `json:"hub_user" bson:"hub_user"`
-	IsTrust     bool   `json:"is_trust" bson:"is_trust"`
+	HubPassword string `json:"hub_password"`
+	Namespace   string `json:"namespace"`
+	HubURL      string `json:"hub_url"`
+	HubUser     string `json:"hub_user"`
+	IsTrust     bool   `json:"is_trust"`
 }
 
 //ComponentPort port
 type ComponentPort struct {
-	PortAlias     string `json:"port_alias" bson:"port_alias"`
-	Protocol      string `json:"protocol" bson:"protocol"`
-	TenantID      string `json:"tenant_id" bson:"tenant_id"`
-	ContainerPort int    `json:"container_port" bson:"container_port"`
-	IsOuter       bool   `json:"is_outer_service" bson:"is_outer_service"`
-	IsInner       bool   `json:"is_inner_service" bson:"is_inner_service"`
+	PortAlias     string `json:"port_alias"`
+	Protocol      string `json:"protocol"`
+	TenantID      string `json:"tenant_id"`
+	ContainerPort int    `json:"container_port"`
+	IsOuter       bool   `json:"is_outer_service"`
+	IsInner       bool   `json:"is_inner_service"`
 }
 
 //ComponentEnv env
 type ComponentEnv struct {
-	AttrName  string `json:"attr_name" bson:"attr_name"`
-	Name      string `json:"name" bson:"name"`
-	IsChange  bool   `json:"is_change" bson:"is_change"`
-	AttrValue string `json:"attr_value" bson:"attr_value"`
+	AttrName  string `json:"attr_name"`
+	Name      string `json:"name"`
+	IsChange  bool   `json:"is_change"`
+	AttrValue string `json:"attr_value"`
+	// port binding variable
+	ContainerPort int32 `json:"container_port"`
 }
 
 //ComponentExtendMethodRule -
 //服务伸缩规则，目前仅包含手动伸缩的规则
 type ComponentExtendMethodRule struct {
-	MinNode    int `json:"min_node" bson:"min_node"`
-	StepMemory int `json:"step_memory" bson:"step_memory"`
-	IsRestart  int `json:"is_restart" bson:"is_restart"`
-	StepNode   int `json:"step_node" bson:"step_node"`
-	MaxMemory  int `json:"max_memory" bson:"max_memory"`
-	MaxNode    int `json:"max_node" bson:"max_node"`
-	MinMemory  int `json:"min_memory" bson:"min_memory"`
+	MinNode    int `json:"min_node"`
+	StepMemory int `json:"step_memory"`
+	IsRestart  int `json:"is_restart"`
+	StepNode   int `json:"step_node"`
+	MaxMemory  int `json:"max_memory"`
+	MaxNode    int `json:"max_node"`
+	MinMemory  int `json:"min_memory"`
+	InitMemory int `json:"init_memory"`
 }
 
 //DefaultExtendMethodRule default Scaling rules
@@ -269,23 +272,22 @@ func DefaultExtendMethodRule() ComponentExtendMethodRule {
 
 //Plugin  templete plugin model
 type Plugin struct {
-	ID            int                 `json:"ID" bson:"id"`
-	Origin        string              `json:"origin" bson:"origin"`
-	CodeRepo      string              `json:"code_repo" bson:"code_repo"`
-	PluginAlias   string              `json:"plugin_alias" bson:"plugin_alias"`
-	PluginName    string              `json:"plugin_name" bson:"plugin_name"`
-	CreateTime    string              `json:"create_time" bson:"create_time"`
-	ShareImage    string              `json:"share_image" bson:"share_image"`
-	ConfigGroups  []PluginConfigGroup `json:"config_groups,omitempty" bson:"config_groups"`
-	PluginKey     string              `json:"plugin_key" bson:"plugin_key"`
-	BuildSource   string              `json:"build_source" bson:"build_source"`
-	Desc          string              `json:"desc" bson:"desc"`
-	PluginID      string              `json:"plugin_id" bson:"plugin_id"`
-	Category      string              `json:"category" bson:"category"`
-	OriginShareID string              `json:"origin_share_id" bson:"origin_share_id"`
-	Image         string              `json:"image" bson:"image"`
-	PluginImage   ImageInfo           `json:"plugin_image" bson:"plugin_image"`
-	BuildVersion  string              `json:"build_version" bson:"build_version"`
+	Origin        string              `json:"origin"`
+	CodeRepo      string              `json:"code_repo"`
+	Image         string              `json:"image"`
+	PluginAlias   string              `json:"plugin_alias"`
+	PluginName    string              `json:"plugin_name"`
+	CreateTime    string              `json:"create_time"`
+	ShareImage    string              `json:"share_image"`
+	ConfigGroups  []PluginConfigGroup `json:"config_groups,omitempty"`
+	PluginKey     string              `json:"plugin_key"`
+	BuildSource   string              `json:"build_source"`
+	Desc          string              `json:"desc"`
+	PluginID      string              `json:"plugin_id"`
+	Category      string              `json:"category"`
+	OriginShareID string              `json:"origin_share_id"`
+	PluginImage   ImageInfo           `json:"plugin_image"`
+	BuildVersion  string              `json:"build_version"`
 }
 
 //Validation validation app templete
@@ -302,40 +304,38 @@ func (s *Plugin) HandleNullValue() {
 
 //PluginConfigGroup 插件配置定义
 type PluginConfigGroup struct {
-	ID              int                       `json:"ID" bson:"id"`
-	ConfigName      string                    `json:"config_name" bson:"config_name"`
-	Options         []PluginConfigGroupOption `json:"options,omitempty" bson:"options"`
-	BuildVersion    string                    `json:"build_version" bson:"build_version"`
-	PluginID        string                    `json:"plugin_id" bson:"plugin_id"`
-	Injection       string                    `json:"injection" bson:"injection"`
-	ServiceMetaType string                    `json:"service_meta_type" bson:"service_meta_type"`
+	ConfigName      string                    `json:"config_name"`
+	Options         []PluginConfigGroupOption `json:"options,omitempty"`
+	BuildVersion    string                    `json:"build_version"`
+	PluginID        string                    `json:"plugin_id"`
+	Injection       string                    `json:"injection"`
+	ServiceMetaType string                    `json:"service_meta_type"`
 }
 
 //PluginConfigGroupOption 插件配置项定义
 type PluginConfigGroupOption struct {
-	ID               int    `json:"ID" bson:"id"`
-	AttrValue        string `json:"attr_alt_value" bson:"attr_alt_value"`
-	AttrType         string `json:"attr_type" bson:"attr_type"`
-	IsChange         bool   `json:"is_change" bson:"is_change"`
-	BuildVersion     string `json:"build_version" bson:"build_version"`
-	PluginID         string `json:"plugin_id" bson:"plugin_id"`
-	ServiceMetaType  string `json:"service_meta_type" bson:"service_meta_type"`
-	AttrDefaultValue string `json:"attr_default_value" bson:"attr_default_value"`
-	AttrName         string `json:"attr_name" bson:"attr_name"`
-	AttrInfo         string `json:"attr_info" bson:"attr_info"`
-	Protocol         string `json:"protocol" bson:"protocol"`
+	AttrValue        string `json:"attr_alt_value"`
+	AttrType         string `json:"attr_type"`
+	IsChange         bool   `json:"is_change"`
+	BuildVersion     string `json:"build_version"`
+	PluginID         string `json:"plugin_id"`
+	ServiceMetaType  string `json:"service_meta_type"`
+	AttrDefaultValue string `json:"attr_default_value"`
+	AttrName         string `json:"attr_name"`
+	AttrInfo         string `json:"attr_info"`
+	Protocol         string `json:"protocol"`
 }
 
 //ComponentShareVolume 共享其他服务存储信息
 type ComponentShareVolume struct {
-	VolumeName       string `json:"mnt_name" bson:"mnt_name"`
-	VolumeMountDir   string `json:"mnt_dir" bson:"mnt_dir"`
-	ShareServiceUUID string `json:"service_share_uuid" bson:"service_share_uuid"`
+	VolumeName       string `json:"mnt_name"`
+	VolumeMountDir   string `json:"mnt_dir"`
+	ShareServiceUUID string `json:"service_share_uuid"`
 }
 
 //ComponentDep 服务依赖关系数据
 type ComponentDep struct {
-	DepServiceKey string `json:"dep_service_key" bson:"dep_service_key"`
+	DepServiceKey string `json:"dep_service_key"`
 }
 
 //VolumeType volume type
@@ -375,9 +375,9 @@ type ComponentVolume struct {
 	FileConent      string     `json:"file_content"`
 	VolumeMountPath string     `json:"volume_path"`
 	VolumeType      VolumeType `json:"volume_type"`
-	VolumeCapacity  int        `json:"volume_capacity"`
-	AccessMode      AccessMode `json:"access_mode"`
-	SharingPolicy   string     `json:"sharing_policy"`
+	VolumeCapacity  int        `json:"volume_capacity,omitempty"`
+	AccessMode      AccessMode `json:"access_mode,omitempty"`
+	SharePolicy     string     `json:"share_policy,omitempty"`
 }
 
 //ComponentPluginConfig 服务插件配置数据
