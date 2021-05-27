@@ -127,11 +127,17 @@ func (d *dockerComposeExporter) buildDockerComposeYaml() error {
 	}
 	dockerCompose := newDockerCompose(d.ram)
 
+	appNnames := make(map[string]struct{})
 	for _, app := range d.ram.Components {
 		shareImage := app.ShareImage
 		shareUUID := app.ServiceShareID
-		appName := dockerCompose.GetServiceName(shareUUID)
 		volumes := dockerCompose.GetServiceVolumes(shareUUID)
+		appName := dockerCompose.GetServiceName(shareUUID)
+		if _, ok := appNnames[appName]; ok {
+			appName += "-" + util.NewUUID()[0:6]
+		} else {
+			appNnames[appName] = struct{}{}
+		}
 
 		// environment variables
 		envs := make(map[string]string, 10)
