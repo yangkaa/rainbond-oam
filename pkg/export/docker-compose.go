@@ -141,20 +141,20 @@ func (d *dockerComposeExporter) buildDockerComposeYaml() error {
 			envs["PORT"] = fmt.Sprintf("%d", port.ContainerPort)
 		}
 		envs["MEMORY_SIZE"] = GetMemoryType(app.ExtendMethodRule.InitMemory)
-		for _, item := range app.Envs {
+		for _, item := range append(app.Envs, app.ServiceConnectInfoMapList...) {
 			envs[item.AttrName] = item.AttrValue
 			if item.AttrValue == "**None**" {
 				envs[item.AttrName] = util.NewUUID()[:8]
 			}
-		}
-		for _, item := range app.ServiceConnectInfoMapList {
-			envs[item.AttrName] = item.AttrValue
 		}
 		var depServices []string
 		for _, item := range app.DepServiceMapList {
 			serviceKey := item.DepServiceKey
 			depEnvs := getPublicEnvByKey(serviceKey, d.ram.Components)
 			for k, v := range depEnvs {
+				if v == "**None**" {
+					v = util.NewUUID()[:8]
+				}
 				envs[k] = v
 			}
 			for _, app := range d.ram.Components {
@@ -377,7 +377,7 @@ func findDepVolume(allVolumes map[string]v1alpha1.ComponentVolumeList, key, volu
 func getPublicEnvByKey(serviceKey string, apps []*v1alpha1.Component) map[string]string {
 	envs := make(map[string]string, 5)
 	for _, app := range apps {
-		if app.ComponentKey == serviceKey {
+		if app.ComponentKey == serviceKey || app.ServiceShareID == serviceKey {
 			for _, item := range app.ServiceConnectInfoMapList {
 				envs[item.AttrName] = item.AttrValue
 			}
