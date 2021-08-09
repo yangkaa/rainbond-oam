@@ -378,7 +378,7 @@ type ComponentVolume struct {
 	VolumeCapacity  int        `json:"volume_capacity,omitempty"`
 	AccessMode      AccessMode `json:"access_mode,omitempty"`
 	SharePolicy     string     `json:"share_policy,omitempty"`
-	Mode            *int       `json:"mode"`
+	Mode            *int       `json:"mode,omitempty"`
 }
 
 //ComponentPluginConfig 服务插件配置数据
