@@ -25,7 +25,7 @@ import (
 	"github.com/goodrain/rainbond-oam/pkg/util"
 )
 
-//RainbondApplicationConfig store app version templete
+//RainbondApplicationConfig store app version template
 type RainbondApplicationConfig struct {
 	AppKeyID           string               `json:"group_key"`
 	AppName            string               `json:"group_name"`
@@ -36,6 +36,7 @@ type RainbondApplicationConfig struct {
 	AppConfigGroups    []*AppConfigGroup    `json:"app_config_groups,omitempty"`
 	IngressHTTPRoutes  []*IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
 	IngressSreamRoutes []*IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
+	Annotations        map[string]string    `json:"annotations,omitempty"`
 }
 
 //HandleNullValue handle null value

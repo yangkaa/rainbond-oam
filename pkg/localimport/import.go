@@ -139,10 +139,12 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 				return nil, err
 			}
 		}
+		r.logger.Infof("start push image %s", newImageName)
 		if err := docker.ImagePush(r.client, newImageName, hubInfo.HubUser, hubInfo.HubPassword, 20); err != nil {
 			logrus.Errorf("push image %s failure %s", newImageName, err.Error())
 			return nil, err
 		}
+		r.logger.Infof("push image %s success", newImageName)
 		com.AppImage = hubInfo
 		com.ShareImage = newImageName
 	}
@@ -175,10 +177,12 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 				return nil, err
 			}
 		}
+		r.logger.Infof("start push image %s", newImageName)
 		if err := docker.ImagePush(r.client, newImageName, hubInfo.HubUser, hubInfo.HubPassword, 20); err != nil {
 			logrus.Errorf("push image %s failure %s", newImageName, err.Error())
 			return nil, err
 		}
+		r.logger.Infof("push image %s success", newImageName)
 		ram.Plugins[i].PluginImage = hubInfo
 		ram.Plugins[i].ShareImage = newImageName
 	}
