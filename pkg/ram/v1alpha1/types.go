@@ -154,7 +154,7 @@ type Component struct {
 	ComponentMonitor          []ComponentMonitor        `json:"component_monitors"`
 	ComponentGraphs           []ComponentGraph          `json:"component_graphs"`
 	Endpoints                 Endpoints                 `json:"endpoints,omitempty"`
-	Labels                    []ComponentLabel          `json:"labels,omitempty"`
+	Labels                    map[string]string         `json:"labels,omitempty"`
 }
 
 //HandleNullValue 处理null值
@@ -412,12 +412,6 @@ type ComponentGraph struct {
 	Title       string `json:"title"`
 	PromQL      string `json:"promql"`
 	Sequence    int    `json:"sequence"`
-}
-
-// ComponentLabel is the label of component.
-type ComponentLabel struct {
-	LabelName  string `json:"label_name"`
-	LabelAlias string `json:"label_alias"`
 }
 
 //AppConfigGroup app config groups
