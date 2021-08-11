@@ -155,6 +155,7 @@ type Component struct {
 	ComponentMonitor          []ComponentMonitor        `json:"component_monitors"`
 	ComponentGraphs           []ComponentGraph          `json:"component_graphs"`
 	Endpoints                 Endpoints                 `json:"endpoints,omitempty"`
+	Labels                    map[string]string         `json:"labels,omitempty"`
 }
 
 //HandleNullValue 处理null值
