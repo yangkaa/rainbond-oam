@@ -90,6 +90,23 @@ func (r *ramImport) Import(filePath string, hubInfo v1alpha1.ImageInfo) (*v1alph
 	if err := json.NewDecoder(metaFile).Decode(&ram); err != nil {
 		return nil, fmt.Errorf("Failed to read meta file : %v", err)
 	}
+	// Converts the picture to a Base64 encoded string
+	if pictureName, ok := ram.Annotations["picture_name"]; ok {
+		imageBase64String, err := util.EncodeImage(path.Join(r.homeDir, files[0].Name(), pictureName))
+		if err != nil {
+			logrus.Errorf("encode picture err : %v", err)
+		} else {
+			ram.Annotations["image_base64_string"] = imageBase64String
+			meta, err := json.Marshal(&ram)
+			if err != nil {
+				return nil, fmt.Errorf("marshal ram meta config failure %s", err.Error())
+			}
+			if err := ioutil.WriteFile(path.Join(r.homeDir, files[0].Name(), "metadata.json"), meta, 0755); err != nil {
+				return nil, fmt.Errorf("write ram app meta config file failure %s", err.Error())
+			}
+		}
+	}
+
 	// load all component images and plugin images
 	//after v5.3 package
 	l1, err := util.GetFileList(path.Join(r.homeDir, files[0].Name()), 1)

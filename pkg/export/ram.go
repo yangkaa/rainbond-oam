@@ -19,10 +19,15 @@
 package export
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"github.com/goodrain/rainbond-oam/pkg/util"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"path"
 	"time"
@@ -59,6 +64,10 @@ func (r *ramExporter) Export() (*Result, error) {
 		// Save plugin attachments
 		if err := r.savePlugins(); err != nil {
 			return nil, err
+		}
+		// Save app logo
+		if err := r.savePictureFile(); err != nil {
+			logrus.Errorf("save picture failed : %v", err)
 		}
 	}
 	r.logger.Infof("success save plugins")
@@ -121,6 +130,37 @@ func (r *ramExporter) savePlugins() error {
 		return err
 	}
 	r.logger.Infof("save plugin images success, Take %s time", time.Now().Sub(start))
+	return nil
+}
+
+func (r *ramExporter) savePictureFile() error {
+	if len(r.ram.Annotations) > 0 {
+		imageBase64String, ok := r.ram.Annotations["image_base64_string"]
+		if ok {
+			imageDecode, err := base64.StdEncoding.DecodeString(imageBase64String)
+			if err != nil {
+				return err
+			}
+			imageSuffix := "jpg"
+			if suffix, ok := r.ram.Annotations["suffix"]; ok {
+				imageSuffix = suffix
+			}
+			// create picture file
+			fileName := fmt.Sprintf("%s.%s", util.NewUUID(), imageSuffix)
+			fp, err := os.Create(path.Join(r.exportPath, fileName))
+			defer fp.Close()
+			if err != nil {
+				return err
+			}
+			buf := new(bytes.Buffer)
+			binary.Write(buf, binary.LittleEndian, imageDecode)
+			fp.Write(buf.Bytes())
+
+			// update annotations
+			delete(r.ram.Annotations, "image_base64_string")
+			r.ram.Annotations["picture_name"] = fileName
+		}
+	}
 	return nil
 }
 

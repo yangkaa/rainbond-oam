@@ -19,6 +19,7 @@
 package util
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -160,4 +161,12 @@ func GetFileList(dirpath string, level int) ([]string, error) {
 		}
 	}
 	return dirlist, nil
+}
+
+func EncodeImage(fileName string) (string, error) {
+	srcByte, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(srcByte), nil
 }
