@@ -438,6 +438,8 @@ type IngressHTTPRoute struct {
 	RequestBodySizeLimit int               `json:"request_body_size_limit"`
 	Websocket            bool              `json:"websocket"`
 	ProxyBuffer          bool              `json:"proxy_buffer"`
+	ProxyBufferSize      int               `json:"proxy_buffer_size"`
+	ProxyBufferNumbers   int               `json:"proxy_buffer_numbers"`
 	ProxyHeader          map[string]string `json:"proxy_header"`
 	TargetComponent
 }
