@@ -79,21 +79,30 @@ func (r *ramExporter) saveComponents() error {
 	var componentImageNames []string
 	for _, component := range r.ram.Components {
 		componentName := unicode2zh(component.ServiceCname)
+		logrus.Infof("start handle component [%v], image is [%v]", componentName, component.ShareImage)
+		r.logger.Infof("start handle component [%v], image is [%v]", componentName, component.ShareImage)
 		if component.ShareImage != "" {
 			// app is image type
+			logrus.Infof("start pull component [%v], image is [%v], repoUser is [%v], pass is [%v]", componentName, component.ShareImage, component.AppImage.HubUser, component.AppImage.HubPassword)
+			r.logger.Infof("start pull component [%v], image is [%v], repoUser is [%v], pass is [%v]", componentName, component.ShareImage, component.AppImage.HubUser, component.AppImage.HubPassword)
 			localImageName, err := pullImage(r.client, component, r.logger)
 			if err != nil {
+				logrus.Errorf("pull image [%v] failed [%v]", component.ShareImage, err)
+				r.logger.Errorf("pull image [%v] failed [%v]", component.ShareImage, err)
 				return err
 			}
 			r.logger.Infof("pull component %s image success", componentName)
 			componentImageNames = append(componentImageNames, localImageName)
 		}
 	}
+	logrus.Infof("start save images to %s", fmt.Sprintf("%s/component-images.tar", r.exportPath))
+	r.logger.Infof("start save images to %s", fmt.Sprintf("%s/component-images.tar", r.exportPath))
 	start := time.Now()
 	ctx := context.Background()
 	err := docker.MultiImageSave(ctx, r.client, fmt.Sprintf("%s/component-images.tar", r.exportPath), componentImageNames...)
 	if err != nil {
 		logrus.Errorf("Failed to save image(%v) : %s", componentImageNames, err)
+		r.logger.Errorf("Failed to save image(%v) : %s", componentImageNames, err)
 		return err
 	}
 	r.logger.Infof("save component images success, Take %s time", time.Now().Sub(start))
@@ -103,6 +112,8 @@ func (r *ramExporter) saveComponents() error {
 func (r *ramExporter) savePlugins() error {
 	var pluginImageNames []string
 	for _, plugin := range r.ram.Plugins {
+		logrus.Errorf("start pull plugin image(%v)", plugin.ShareImage)
+		r.logger.Errorf("start pull plugin image(%v)", plugin.ShareImage)
 		if plugin.ShareImage != "" {
 			// app is image type
 			localImageName, err := pullPluginImage(r.client, plugin, r.logger)
@@ -115,6 +126,8 @@ func (r *ramExporter) savePlugins() error {
 	}
 	start := time.Now()
 	ctx := context.Background()
+	logrus.Errorf("start save plugin images to [%v]", fmt.Sprintf("%s/plugins-images.tar", r.exportPath))
+	r.logger.Errorf("start save plugin images to [%v]", fmt.Sprintf("%s/plugins-images.tar", r.exportPath))
 	err := docker.MultiImageSave(ctx, r.client, fmt.Sprintf("%s/plugins-images.tar", r.exportPath), pluginImageNames...)
 	if err != nil {
 		logrus.Errorf("Failed to save image(%v) : %s", pluginImageNames, err)

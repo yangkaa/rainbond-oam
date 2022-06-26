@@ -98,6 +98,7 @@ func (d *dockerComposeExporter) saveComponents() error {
 				}
 			}
 		}
+		logrus.Infof("start handle component [%v], image is [%v]", componentName, component.ShareImage)
 		if component.ShareImage != "" {
 			// app is image type
 			localImageName, err := pullImage(d.client, component, d.logger)
