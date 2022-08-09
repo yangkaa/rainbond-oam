@@ -25,6 +25,15 @@ import (
 	"github.com/goodrain/rainbond-oam/pkg/util"
 )
 
+const (
+	// GovernanceModeBuildInServiceMesh means the governance mode is BUILD_IN_SERVICE_MESH
+	GovernanceModeBuildInServiceMesh = "BUILD_IN_SERVICE_MESH"
+	// GovernanceModeKubernetesNativeService means the governance mode is KUBERNETES_NATIVE_SERVICE
+	GovernanceModeKubernetesNativeService = "KUBERNETES_NATIVE_SERVICE"
+	// GovernanceModeIstioServiceMesh means the governance mode is ISTIO_SERVICE_MESH
+	GovernanceModeIstioServiceMesh = "ISTIO_SERVICE_MESH"
+)
+
 //RainbondApplicationConfig store app version template
 type RainbondApplicationConfig struct {
 	AppKeyID           string               `json:"group_key"`
@@ -37,12 +46,26 @@ type RainbondApplicationConfig struct {
 	IngressHTTPRoutes  []*IngressHTTPRoute  `json:"ingress_http_routes,omitempty"`
 	IngressSreamRoutes []*IngressSreamRoute `json:"ingress_stream_routes,omitempty"`
 	Annotations        map[string]string    `json:"annotations,omitempty"`
+	K8sResources       []*K8sResource       `json:"k8s_resources,omitempty"`
+	GovernanceMode     string               `json:"governance_mode" default:"BUILD_IN_SERVICE_MESH"`
+}
+
+// K8sResource The running environment of an application mainly refers to the k8s resources created under the application
+type K8sResource struct {
+	Name string `json:"name"`
+	// The resource kind is the same as that in k8s cluster
+	Kind string `json:"kind"`
+	// Yaml file for the storage resource
+	Content string `json:"content"`
 }
 
 //HandleNullValue handle null value
 func (s *RainbondApplicationConfig) HandleNullValue() {
 	if s.TempleteVersion == "" {
 		s.TempleteVersion = "v2"
+	}
+	if s.GovernanceMode == "" {
+		s.GovernanceMode = GovernanceModeBuildInServiceMesh
 	}
 	if s.Plugins == nil {
 		s.Plugins = []*Plugin{}
@@ -156,6 +179,7 @@ type Component struct {
 	ComponentGraphs           []ComponentGraph          `json:"component_graphs"`
 	Endpoints                 Endpoints                 `json:"endpoints,omitempty"`
 	Labels                    map[string]string         `json:"labels,omitempty"`
+	ComponentK8sAttributes    []ComponentK8sAttribute   `json:"component_k8s_attributes"`
 }
 
 //HandleNullValue 处理null值
@@ -462,4 +486,21 @@ type Endpoints struct {
 	Endpoints     string `json:"endpoints_info"`
 	ServiceCname  string `json:"service_cname"`
 	EndpointsType string `json:"endpoints_type"`
+}
+
+// ComponentK8sAttribute k8s component attribute.
+type ComponentK8sAttribute struct {
+	ComponentID string `json:"component_id"`
+
+	// Name Define the attribute name, which is currently supported
+	// [nodeSelector/labels/tolerations/volumes/serviceAccountName/privileged/affinity]
+	// The field name should be the same as that in the K8s resource yaml file.
+	Name string `json:"name"`
+
+	// The field type defines how the attribute is stored. Currently, `json/yaml/string` are supported
+	SaveType string `json:"save_type"`
+
+	// Define the attribute value, which is stored in the database.
+	// The value is stored in the database in the form of `json/yaml/string`.
+	AttributeValue string `json:"attribute_value"`
 }
