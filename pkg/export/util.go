@@ -182,12 +182,16 @@ func SavePlugins(ram v1alpha1.RainbondApplicationConfig, imageClient image.Clien
 }
 
 func Packaging(packageName, homePath, exportPath string) (string, error) {
-	cmd := exec.Command("tar", "-czf", path.Join(homePath, packageName), path.Base(exportPath))
-	logrus.Infof("package cmd: [%s]", fmt.Sprintf("tar -czf %s %s", path.Join(homePath, packageName), path.Base(exportPath)))
+	cmd := exec.Command("tar", "-c", "--warning=no-file-changed", "-z", "-f", path.Join(homePath, packageName), path.Base(exportPath))
+	logrus.Infof("package cmd: [%s]", cmd.String())
 	cmd.Dir = homePath
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
+		if strings.Contains(stderr.String(), "file changed as we read it") {
+			logrus.Warnf("Ignored changed files warning: %s", stderr.String())
+			return packageName, nil // 返回成功但记录警告
+		}
 		return "", fmt.Errorf("error is [%s] , stderr is [%s]", err.Error(), stderr.String())
 	}
 	return packageName, nil
