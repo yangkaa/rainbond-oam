@@ -182,7 +182,7 @@ func SavePlugins(ram v1alpha1.RainbondApplicationConfig, imageClient image.Clien
 }
 
 func Packaging(packageName, homePath, exportPath string) (string, error) {
-	cmd := exec.Command("tar", "-c", "--warning=no-file-changed", "-z", "-f", path.Join(homePath, packageName), path.Base(exportPath))
+	cmd := exec.Command("tar", "-czf", path.Join(homePath, packageName), path.Base(exportPath))
 	logrus.Infof("package cmd: [%s]", cmd.String())
 	cmd.Dir = homePath
 	var stderr bytes.Buffer
